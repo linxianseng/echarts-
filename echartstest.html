@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.bootcss.com/echarts/4.8.0/echarts.js"></script>
+ <script src="https://unpkg.com/vue/dist/vue.js"></script>
+ <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+ <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+
+</head>
+
+
+<style>
+
+
+</style>
+<body>
+  <div id="app">
+    <div style="overflow-y:auto;background-color:green;height:500px" id="mybox" >
+      <el-row style="overflow-y:auto;background-color:yellow">
+      <el-col :span="20" >
+        <div id="myChart" :style="{height:aaa+'px'}"></div>
+      </el-col>
+      <el-col :span="4">
+        <div v-for="item in arr" :key="item" ref="my">
+          <div style="height:50px">{{item}}</div>
+        </div>
+      </el-col>
+    </el-row>
+    </div>
+  </div>
+</body>
+<script>
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    arr:[],
+    mixarr:[],  
+    num:0 ,
+    total:0 ,
+    aaa:100,
+  },
+  mounted(){
+    this.$nextTick(() => {
+      this.initEcharts();
+      
+    })
+    this.add()
+  },
+  methods: {
+    fix(){
+      this.$nextTick(function() {
+        //console.log("底部固定")
+        let div = document.getElementById('mybox');
+        div.scrollTop = div.scrollHeight;
+      })
+    },
+    add(){
+      setTimeout(()=>{
+        this.num ++;
+        this.arr.push(this.num)
+      },500)
+    },
+    addmix(){
+      for(let a=0;a<5;a++){
+        this.mixarr.unshift(Math.ceil(Math.random()*10))
+      }
+    },
+    initEcharts(){
+        let myChart = echarts.init(document.getElementById('myChart'))
+        myChart.resize({height:this.total}); 
+        let option = {
+          xAxis: {
+            show:false,
+            type: 'value',
+          },
+          yAxis: {
+            show:false,
+            type: 'category'
+          },
+          series: [   
+            {
+              data: this.mixarr,
+              type: 'line',
+              smooth: true
+            },
+            {
+                data: this.mixarr2,
+                type: 'line',
+                smooth: true
+            }
+          
+          ]
+      };
+      myChart.setOption(option)
+     
+    }
+  },
+  updated(){
+    this.$nextTick(() => {
+      this.initEcharts();
+      this.fix()
+    })
+    this.add();
+    this.addmix();
+    this.total=this.$refs.my.length*50
+  },
+
+})
+
+
+</script>
+<style>
+
+</style>
+
+
+</html>
